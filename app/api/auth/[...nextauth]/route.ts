@@ -1,11 +1,10 @@
 // app/api/auth/[...nextauth]/route.ts
 import NextAuth from "next-auth";
-import { AuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
-import prisma from "@/utils/db"; // Make sure this exports a working PrismaClient
+import prisma from "@/utils/db"; // adjust path if needed
 
-export const authOptions: AuthOptions = {
+const handler = NextAuth({
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -14,7 +13,7 @@ export const authOptions: AuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials.password) return null;
+        if (!credentials?.email || !credentials?.password) return null;
 
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
@@ -30,7 +29,7 @@ export const authOptions: AuthOptions = {
     }),
   ],
   session: {
-    strategy: "jwt", // or "database" if using Prisma session table
+    strategy: "jwt",
   },
   callbacks: {
     async jwt({ token, user }) {
@@ -41,7 +40,7 @@ export const authOptions: AuthOptions = {
       return token;
     },
     async session({ session, token }) {
-      if (token && session.user) {
+      if (session.user) {
         session.user.id = token.id;
         session.user.email = token.email;
       }
@@ -49,10 +48,8 @@ export const authOptions: AuthOptions = {
     },
   },
   pages: {
-    signIn: "/login", // custom login page (optional)
+    signIn: "/login", // optional, change if you use a custom login page
   },
-};
-
-const handler = NextAuth(authOptions);
+});
 
 export { handler as GET, handler as POST };

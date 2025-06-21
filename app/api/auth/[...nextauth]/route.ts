@@ -40,12 +40,12 @@ const handler = NextAuth({
       return token;
     },
     async session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.id;
-        session.user.email = token.email;
-      }
-      return session;
-    },
+  if (session.user && token) {
+    session.user.id = token.id as string;
+    session.user.email = token.email as string;
+  }
+  return session;
+}
   },
   pages: {
     signIn: "/login", // optional, change if you use a custom login page

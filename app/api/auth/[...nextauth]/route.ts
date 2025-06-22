@@ -2,7 +2,7 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
-import prisma from "@/utils/db"; // adjust path if needed
+import prisma from "@/utils/db";
 
 const handler = NextAuth({
   providers: [
@@ -24,7 +24,11 @@ const handler = NextAuth({
         const isValid = await bcrypt.compare(credentials.password, user.password!);
         if (!isValid) return null;
 
-        return user;
+        return {
+          id: user.id,
+          email: user.email,
+      
+        };
       },
     }),
   ],
@@ -32,23 +36,23 @@ const handler = NextAuth({
     strategy: "jwt",
   },
   callbacks: {
-   async jwt({ token, user }) {
-  if (user) {
-    token.id = user.id;
-    token.email = user.email as string;
-  }
-  return token;
-},
-    async session({ session, user }) {
-  if (session.user ) {
-    session.user.id = user.id as string;
-    session.user.email = user.email as string;
-  }
-  return session;
-}
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.email = user.email;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.id as string;
+        session.user.email = token.email as string;
+      }
+      return session;
+    },
   },
   pages: {
-    signIn: "/login", // optional, change if you use a custom login page
+    signIn: "/login",
   },
 });
 

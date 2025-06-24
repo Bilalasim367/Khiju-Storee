@@ -3,17 +3,11 @@
 import React from "react";
 import { useProductStore } from "@/app/_zustand/store";
 import toast from "react-hot-toast";
-import { useSession } from "next-auth/react";
 
 const AddToCartSingleProductBtn = ({ product, quantityCount } : SingleProductBtnProps) => {
   const { addToCart, calculateTotals } = useProductStore();
-  const { data: session } = useSession();
 
   const handleAddToCart = () => {
-    if (!session) {
-      toast.error("You must be logged in to add products to the cart");
-      return;
-    }
 
     addToCart({
       id: product?.id.toString(),

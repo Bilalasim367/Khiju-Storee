@@ -424,6 +424,7 @@ const CheckoutPage = () => {
       <div className="mt-1">
         <input
           type="text"
+          placeholder="•••• •••• •••• ••••"
           id="card-number"
           name="card-number"
           autoComplete="cc-number"
@@ -449,6 +450,7 @@ const CheckoutPage = () => {
       </label>
       <div className="mt-1">
         <input
+        placeholder="MM/YY"
           type="text"
           name="expiration-date"
           id="expiration-date"
@@ -475,6 +477,7 @@ const CheckoutPage = () => {
       </label>
       <div className="mt-1">
         <input
+        placeholder="•••"
           type="text"
           name="cvc"
           id="cvc"
@@ -648,7 +651,7 @@ const CheckoutPage = () => {
 
 
           <div className="mt-10 border-t border-black pt-6">
-<Link href='/aftercheckoutbuttonclick'>
+<Link href='/thankyoupage'>
   <button
     type="button"
     onClick={makePurchase}
